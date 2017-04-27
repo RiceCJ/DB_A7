@@ -212,6 +212,18 @@ private:
 public:
 	SFWQuery () {}
 
+	vector <pair <string, string>> getTables() {
+		return tablesToProcess;
+	}
+
+	vector <ExprTreePtr> getSelects() {
+		return valuesToSelect;
+	}
+
+	vector <ExprTreePtr> getAllDisjunctions(){
+		return allDisjunctions;
+	}
+
 	SFWQuery (struct ValueList *selectClause, struct FromList *fromClause, 
 		struct CNF *cnf, struct ValueList *grouping) {
 		valuesToSelect = selectClause->valuesToCompute;
@@ -289,6 +301,10 @@ public:
 
 	bool isSFWQuery () {
 		return isQuery;
+	}
+
+	SFWQuery getQuery() {
+		return myQuery;
 	}
 
 	string addToCatalog (string storageDir, MyDB_CatalogPtr addToMe) {
