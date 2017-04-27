@@ -25,7 +25,7 @@ private:
     MyDB_BufferManagerPtr bufMgr;
     MyDB_CatalogPtr myCatalog;
 
-    string parseStringPredicate(vector<string> allPredicates);
     MyDB_TableReaderWriterPtr joinTable();
+    string concatenatePredicates(vector<string> predicates);
 };
 #endif //DBMS_TEST_MYRELOPERATION_H

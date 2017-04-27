@@ -40,7 +40,43 @@ void MyRelOperation::run() {
 
     //append select values to output schema
     for(auto v:valueToSelect){
-        mySchemaOut->appendAtt(v->getAttr());
+        mySchemaOut->appendAtt(v->getAttrs(myCatalog,tablename));
         projections.push_back(v->toString());
+        // todo: add check groupings
     }
+    MyDB_TablePtr myTableOut = make_shared<MyDB_Table>("outTable","outTable.bin", mySchemaOut);
+    MyDB_TableReaderWriterPtr outTableReaderWriter = make_shared<MyDB_TableReaderWriter>(myTableOut,bufMgr);
+
+    vector<string> selPredicates;
+    for(auto disjunction:query.getAllDisjunctions()){
+        selPredicates.push_back(disjunction->toString());
+    }
+    string selectPredicates = concatenatePredicates(selPredicates);
+
+    // todo: add aggregate
+    RegularSelection regSelection(inputTableReaderWriter, outTableReaderWriter,selectPredicates, projections)
+    regSelection.run();
+
+    MyDB_RecordPtr rec = outTableReaderWriter->getEmptyRecord();
+    MyDB_RecordIteratorAltPtr iter = outTableReaderWriter->getIteratorAlt();
+
+    int size = 0;
+    while(iter->advance()){
+        iter->getCurrent(rec);
+        if(size < 30){
+            cout<<rec<<endl;
+        }
+        size++;
+    }
+    cout<<endl<<"Total size is: "<<size<<endl;
+}
+
+string MyRelOperation::concatenatePredicates(vector<string> predicates) {
+    int size = predicates.size();
+    if(size==1) return predicates.front();
+    string ret= predicates[0];
+    for(int i=1;i<size;i++){
+        ret= "&& (" + ret + ", "+ predicates[i] + ")";
+    }
+    return ret;
 }
