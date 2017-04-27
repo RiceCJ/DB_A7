@@ -9,7 +9,7 @@
 #include "ExprTree.h"
 #include "MyDB_Record.h"
 #include "RegularSelection.h"
-#include "Aggregate.h"
+//#include "Aggregate.h"
 #include "MyRelOperation.h"
 #include "ScanJoin.h"
 
@@ -63,7 +63,8 @@ MyDB_TableReaderWriterPtr MyRelOperation::joinTable() {
     vector <string> rightPredicates;
 
     for (auto v : allDisjunctions){
-        pair<bool, string> isJoinPair = v->IsJoinPredicate();
+        //pair<bool, string> isJoinPair = v->IsJoinPredicate();
+        pair<bool, string> isJoinPair = make_pair(false,"123");
         if (isJoinPair.first){
             string delimiter = "|";
             string atts = isJoinPair.second;
@@ -136,7 +137,7 @@ void MyRelOperation::run() {
     string selectPredicates = concatenatePredicates(selPredicates);
 
     // todo: add aggregate
-    RegularSelection regSelection(inputTableReaderWriter, outTableReaderWriter,selectPredicates, projections)
+    RegularSelection regSelection(inputTableReaderWriter, outTableReaderWriter,selectPredicates, projections);
     regSelection.run();
 
     MyDB_RecordPtr rec = outTableReaderWriter->getEmptyRecord();

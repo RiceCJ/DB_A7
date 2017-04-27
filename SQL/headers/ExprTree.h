@@ -71,7 +71,7 @@ public:
 	}
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
-		return make_pair("",make_shared <MyDB_doubleTypeType>());
+		return make_pair("",make_shared <MyDB_DoubleAttType>());
 	}
 
 
@@ -98,7 +98,7 @@ public:
 	}
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
-		return make_pair("",make_shared <MyDB_intTypeType>());
+		return make_pair("",make_shared <MyDB_IntAttType>());
 	}
 
 	~IntLiteral () {}
