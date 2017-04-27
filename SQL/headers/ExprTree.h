@@ -20,7 +20,7 @@ class ExprTree {
 public:
 	virtual string toString () = 0;
 	virtual ~ExprTree () {}
-	virtual pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName);
+	virtual pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName) = 0;
 	virtual MyDB_ExpAttType getAttType() = 0;
 };
 
@@ -135,13 +135,14 @@ class Identifier : public ExprTree {
 private:
 	string tableName;
 	string attName;
-	MyDB_ExpAttType attType2;
+	MyDB_ExpAttType myExpAttType;
 public:
 
 	Identifier (char *tableNameIn, char *attNameIn) {
 		tableName = string (tableNameIn);
 		attName = string (attNameIn);
 	}
+
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName) override {
 		string type;
@@ -151,25 +152,27 @@ public:
 		if(catalog -> getString(attr_name, type)){
 			if(type.compare("bool") == 0){
 				attType = make_shared <MyDB_BoolAttType> ();
-				attType2 = MyDB_ExpAttType::boolType;
-
+				myExpAttType = MyDB_ExpAttType::boolType;
 			}
 			else if(type.compare("string") == 0){
 				attType = make_shared <MyDB_StringAttType> ();
-				attType2 = MyDB_ExpAttType::stringType;
+				myExpAttType = MyDB_ExpAttType::stringType;
 			}
 			else if(type.compare("int") == 0){
 				attType = make_shared <MyDB_IntAttType> ();
-				attType2 = MyDB_ExpAttType::stringType;
+				myExpAttType = MyDB_ExpAttType::stringType;
 			}
 			else if(type.compare("double") == 0){
 				attType = make_shared <MyDB_DoubleAttType> ();
-				attType2 = MyDB_ExpAttType::stringType;
+				myExpAttType = MyDB_ExpAttType::stringType;
 			}
 		}
 		return make_pair("[" + attName + "]", attType);
 	}
 
+	MyDB_ExpAttType getAttType() {
+		return myExpAttType;
+	}
 
 	string toString () {
 		return "[" + tableName + "_" + attName + "]";
