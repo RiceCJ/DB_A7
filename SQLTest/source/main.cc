@@ -5,13 +5,16 @@
 #include "MyDB_BufferManager.h"
 #include "MyDB_TableReaderWriter.h"
 #include "MyDB_BPlusTreeReaderWriter.h"
+#include "MyRelOperation.h"
 #include <string>      
 #include <iostream>   
 #include <sstream>
 #include <algorithm>
 #include <iterator>
+#include <chrono>
 
 using namespace std;
+using namespace std::chrono;
 string toLower (string data) {
 	transform(data.begin(), data.end(), data.begin(), ::tolower);
 	return data;
@@ -163,6 +166,11 @@ int main (int numArgs, char **args) {
 
 						// print it out
 						final->printSFWQuery ();
+						auto msbegin = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+						MyRelOperation myrelop (final, allTableReaderWriters, myMgr, myCatalog);
+						myrelop.run();
+						auto msend = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+						cout<<"Time Cost: "<<msend - msbegin<<" ms"<<endl;
 					}
 
 					// get outta here
