@@ -1,0 +1,10 @@
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/create_parser.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/create_lexer.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/buffer_test.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/sql_test.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/bplus_test.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/rel_op_test.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/sort_test.dir
+/Users/cj/Documents/17 Spring/comp 530/assignments/assign7/DB_A7/cmake-build-debug/CMakeFiles/record_test.dir
