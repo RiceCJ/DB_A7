@@ -9,7 +9,7 @@
 #include "ExprTree.h"
 #include "MyDB_Record.h"
 #include "RegularSelection.h"
-//#include "Aggregate.h"
+#include "Aggregate.h"
 #include "MyRelOperation.h"
 #include "ScanJoin.h"
 
@@ -113,28 +113,40 @@ void MyRelOperation::run() {
         cout<< "Only one table here!"<<endl;
         string path = tablename+ ".tbl";
         inputTableReaderWriter = tables[tablename];
-        inputTableReaderWriter->loadFromTextFile(path);
-        cout<< "input table load successfully! " <<endl;
-
-    }else{
-        inputTableReaderWriter = joinTable();
-    }
-
+        //inputTableReaderWriter->loadFromTextFile(path);
+       }
+// else{
+//        inputTableReaderWriter = joinTable();
+//    }
     //prepare for output table
     MyDB_SchemaPtr mySchemaOut = make_shared<MyDB_Schema>();
     vector<ExprTreePtr> valueToSelect = query.getSelects();
     vector<string> projections;
-    cout<< "get "<< valueToSelect.size() << " selects."<<endl;
+    vector <pair <MyDB_AggType, string>> aggsToCompute;
+    vector<string> groups;
+    bool hasAgg=false;
     //append select values to output schema
     for(auto v:valueToSelect){
         mySchemaOut->appendAtt(v->getAttrs(myCatalog,tablename));
         projections.push_back(v->toString());
         // todo: add check groupings
+        if(v->getType() == MyDB_ExpType::sumExp){
+            hasAgg = true;
+            aggsToCompute.push_back(make_pair(MyDB_AggType::aggSum, v->toString().substr(3)));
+        }else if(v->getType() == MyDB_ExpType::avgExp){
+            hasAgg = true;
+            aggsToCompute.push_back(make_pair(MyDB_AggType::aggAvg, v->toString().substr(3)));
+        }else{
+            groups.push_back(v->toString());
+        }
     }
 
-    cout<< "total attrs:" << mySchemaOut->getAtts().size() <<endl;
+    for(auto att:mySchemaOut->getAtts()){
+        cout<< "MyschemaOut Attr:" << att.first <<endl;
+        cout<< "MyschemaOut Attr Type: "<< att.second->toString() <<endl;
+    }
 
-    MyDB_TablePtr myTableOut = make_shared<MyDB_Table>("outTable","outTable.bin", mySchemaOut);
+    MyDB_TablePtr myTableOut = make_shared<MyDB_Table>("outTable1","outTable1.bin", mySchemaOut);
     MyDB_TableReaderWriterPtr outTableReaderWriter = make_shared<MyDB_TableReaderWriter>(myTableOut,bufMgr);
 
     vector<string> selPredicates;
@@ -144,8 +156,14 @@ void MyRelOperation::run() {
     string selectPredicates = concatenatePredicates(selPredicates);
 
     // todo: add aggregate
-    RegularSelection regSelection(inputTableReaderWriter, outTableReaderWriter,selectPredicates, projections);
-    regSelection.run();
+    if(hasAgg){
+        Aggregate aggOp (inputTableReaderWriter, outTableReaderWriter, aggsToCompute, groups, selectPredicates);
+        aggOp.run();
+    }else{
+        RegularSelection regSelection(inputTableReaderWriter, outTableReaderWriter,selectPredicates, projections);
+        regSelection.run();
+    }
+
 
     MyDB_RecordPtr rec = outTableReaderWriter->getEmptyRecord();
     MyDB_RecordIteratorAltPtr iter = outTableReaderWriter->getIteratorAlt();

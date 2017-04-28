@@ -12,6 +12,10 @@ using namespace std;
 class ExprTree;
 typedef shared_ptr <ExprTree> ExprTreePtr;
 enum MyDB_ExpAttType {boolType, doubleType, intType, stringType};
+enum MyDB_ExpType{ boolExp,doubleExp,intExp,stringExp,identifierExp, minusExp,
+	plusExp, timesExp, divideExp, gtExp, ltExp, neqExp, orExp, eqExp,
+	notExp, sumExp, avgExp};
+
 // this class encapsules a parsed SQL expression (such as "this.that > 34.5 AND 4 = 5")
 
 // class ExprTree is a pure virtual class... the various classes that implement it are below
@@ -22,6 +26,7 @@ public:
 	virtual ~ExprTree () {}
 	virtual pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName) = 0;
 	virtual MyDB_ExpAttType getAttType() = 0;
+	virtual MyDB_ExpType getType() = 0;
 };
 
 class BoolLiteral : public ExprTree {
@@ -50,6 +55,11 @@ public:
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::boolExp;
+	}
+
+
 };
 
 class DoubleLiteral : public ExprTree {
@@ -72,6 +82,10 @@ public:
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("",make_shared <MyDB_DoubleAttType>());
+	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::doubleExp;
 	}
 
 
@@ -101,6 +115,10 @@ public:
 		return make_pair("",make_shared <MyDB_IntAttType>());
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::intExp;
+	}
+
 	~IntLiteral () {}
 };
 
@@ -126,6 +144,11 @@ public:
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("",make_shared <MyDB_StringAttType>());
 	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::stringExp;
+	}
+
 
 	~StringLiteral () {}
 };
@@ -177,6 +200,10 @@ public:
 		return myExpAttType;
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::identifierExp;
+	}
+
 	//TODO: find a way to solve the tablename problem
 	string toString () {
 		//return "[" + tableName + "_" + attName + "]";
@@ -212,6 +239,11 @@ public:
 			return MyDB_ExpAttType::intType;
 		}
 	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::minusExp;
+	}
+
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
@@ -264,6 +296,11 @@ public:
 
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::plusExp;
+	}
+
+
 
 	~PlusOp () {}
 };
@@ -298,6 +335,11 @@ public:
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::timesExp;
+	}
+
 
 	~TimesOp () {}
 };
@@ -334,7 +376,10 @@ public:
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
 
-	
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::timesExp;
+	}
+
 	~DivideOp () {}
 };
 
@@ -359,6 +404,11 @@ public:
 	MyDB_ExpAttType getAttType() {
 		return MyDB_ExpAttType::boolType;
 	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::gtExp;
+	}
+
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 
@@ -397,6 +447,10 @@ public:
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::ltExp;
+	}
+
 	~LtOp () {}
 };
 
@@ -426,6 +480,10 @@ public:
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::neqExp;
+	}
+
 	~NeqOp () {}
 };
 
@@ -449,6 +507,10 @@ public:
 
 	MyDB_ExpAttType getAttType() {
 		return MyDB_ExpAttType::boolType;
+	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::orExp;
 	}
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
@@ -484,6 +546,11 @@ public:
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::eqExp;
+	}
+
+
 	~EqOp () {}
 };
 
@@ -506,6 +573,11 @@ public:
 	MyDB_ExpAttType getAttType() {
 		return MyDB_ExpAttType::boolType;
 	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::notExp;
+	}
+
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("", make_shared <MyDB_BoolAttType> ());
@@ -534,6 +606,10 @@ public:
 		return child->getAttType();
 	}
 
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::sumExp;
+	}
+
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){
 		return make_pair("sum", make_shared <MyDB_DoubleAttType> ());
 	}
@@ -559,6 +635,10 @@ public:
 
 	MyDB_ExpAttType getAttType() {
 		return child->getAttType();
+	}
+
+	MyDB_ExpType getType(){
+		return MyDB_ExpType::avgExp;
 	}
 
 	pair<string, MyDB_AttTypePtr> getAttrs (MyDB_CatalogPtr catalog, string tbName){

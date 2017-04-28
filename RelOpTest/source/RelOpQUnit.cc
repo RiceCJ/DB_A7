@@ -316,8 +316,8 @@ int main () {
 
 	{
 		vector <pair <MyDB_AggType, string>> aggsToCompute;
-		aggsToCompute.push_back (make_pair (MyDB_AggType :: avg, "* ([r_suppkey], double[1.0])"));
-		aggsToCompute.push_back (make_pair (MyDB_AggType :: avg, "[r_acctbal]"));
+		aggsToCompute.push_back (make_pair (MyDB_AggType :: aggAvg, "* ([r_suppkey], double[1.0])"));
+		aggsToCompute.push_back (make_pair (MyDB_AggType :: aggAvg, "[r_acctbal]"));
 		aggsToCompute.push_back (make_pair (MyDB_AggType :: cnt, "int[0]"));
 
 		vector <string> groupings;
@@ -358,8 +358,8 @@ int main () {
 
 	{
 		vector <pair <MyDB_AggType, string>> aggsToCompute;
-		aggsToCompute.push_back (make_pair (MyDB_AggType :: avg, "* ([r_suppkey], double[1.0])"));
-		aggsToCompute.push_back (make_pair (MyDB_AggType :: avg, "[r_acctbal]"));
+		aggsToCompute.push_back (make_pair (MyDB_AggType :: aggAvg, "* ([r_suppkey], double[1.0])"));
+		aggsToCompute.push_back (make_pair (MyDB_AggType :: aggAvg, "[r_acctbal]"));
 		aggsToCompute.push_back (make_pair (MyDB_AggType :: cnt, "int[0]"));
 
 		vector <string> groupings;
@@ -395,7 +395,7 @@ int main () {
 		}
 
 		aggsToCompute.clear ();
-		aggsToCompute.push_back (make_pair (MyDB_AggType :: sum, "[r_cnt]"));
+		aggsToCompute.push_back (make_pair (MyDB_AggType :: aggSum, "[r_cnt]"));
 
 		groupings.clear ();
 		
