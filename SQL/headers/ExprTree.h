@@ -141,6 +141,7 @@ public:
 	Identifier (char *tableNameIn, char *attNameIn) {
 		tableName = string (tableNameIn);
 		attName = string (attNameIn);
+		myExpAttType = MyDB_ExpAttType::boolType;
 	}
 
 
@@ -150,6 +151,8 @@ public:
 
 		MyDB_AttTypePtr attType;
 		if(catalog -> getString(attr_name, type)){
+			cout << "att name: "<<attName <<endl;
+			cout<< "attr_name : "<< attr_name<<endl;
 			if(type.compare("bool") == 0){
 				attType = make_shared <MyDB_BoolAttType> ();
 				myExpAttType = MyDB_ExpAttType::boolType;
@@ -174,8 +177,10 @@ public:
 		return myExpAttType;
 	}
 
+	//TODO: find a way to solve the tablename problem
 	string toString () {
-		return "[" + tableName + "_" + attName + "]";
+		//return "[" + tableName + "_" + attName + "]";
+		return "[" + attName + "]";
 	}	
 
 	~Identifier () {}

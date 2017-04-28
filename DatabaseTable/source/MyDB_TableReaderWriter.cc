@@ -94,7 +94,7 @@ void MyDB_TableReaderWriter :: append (MyDB_RecordPtr appendMe) {
 }
 
 pair <vector <size_t>, size_t>  MyDB_TableReaderWriter :: loadFromTextFile (string fName) {
-
+	cout<< "begin load!"<<endl;
 	// empty out the database file
 	forMe->setLastPage (0);
 	lastPage = make_shared <MyDB_PageReaderWriter> (*this, forMe->lastPage ());

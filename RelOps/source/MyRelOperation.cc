@@ -110,8 +110,12 @@ void MyRelOperation::run() {
     string tablename = tableToProcess.front().first;
     MyDB_TableReaderWriterPtr inputTableReaderWriter = nullptr;
     if(tableToProcess.size()==1){
-        string path = "./"+tablename+ ".tbl";
+        cout<< "Only one table here!"<<endl;
+        string path = tablename+ ".tbl";
+        inputTableReaderWriter = tables[tablename];
         inputTableReaderWriter->loadFromTextFile(path);
+        cout<< "input table load successfully! " <<endl;
+
     }else{
         inputTableReaderWriter = joinTable();
     }
@@ -120,13 +124,16 @@ void MyRelOperation::run() {
     MyDB_SchemaPtr mySchemaOut = make_shared<MyDB_Schema>();
     vector<ExprTreePtr> valueToSelect = query.getSelects();
     vector<string> projections;
-
+    cout<< "get "<< valueToSelect.size() << " selects."<<endl;
     //append select values to output schema
     for(auto v:valueToSelect){
         mySchemaOut->appendAtt(v->getAttrs(myCatalog,tablename));
         projections.push_back(v->toString());
         // todo: add check groupings
     }
+
+    cout<< "total attrs:" << mySchemaOut->getAtts().size() <<endl;
+
     MyDB_TablePtr myTableOut = make_shared<MyDB_Table>("outTable","outTable.bin", mySchemaOut);
     MyDB_TableReaderWriterPtr outTableReaderWriter = make_shared<MyDB_TableReaderWriter>(myTableOut,bufMgr);
 
@@ -161,5 +168,6 @@ string MyRelOperation::concatenatePredicates(vector<string> predicates) {
     for(int i=1;i<size;i++){
         ret= "&& (" + ret + ", "+ predicates[i] + ")";
     }
+    cout << "predicates: " << ret << endl;
     return ret;
 }
