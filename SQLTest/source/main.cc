@@ -12,6 +12,9 @@
 #include <algorithm>
 #include <iterator>
 #include <chrono>
+#include <sys/stat.h>
+#include <stdio.h>
+
 
 using namespace std;
 using namespace std::chrono;
@@ -21,6 +24,8 @@ string toLower (string data) {
 }
 
 int main (int numArgs, char **args) {
+
+    vector<string> toDelete;
 
 	// make sure we have the correct arguments
 	if (numArgs != 3) {
@@ -89,6 +94,16 @@ int main (int numArgs, char **args) {
 					for (auto &a : allTables) {
 						a.second->putInCatalog (myCatalog);
 					}
+                    for(string todel:toDelete){
+                        int err = remove(todel.c_str());
+                        if(err == -1){
+                            cout<<"Fail to remove garbage file  "<<todel<<endl;
+                        }
+                        else{
+                            cout<<"Successfully remove garbage file  "<<todel<<endl;
+                        }
+
+                    }
 					return 0;
 				}
 
@@ -146,7 +161,10 @@ int main (int numArgs, char **args) {
 
 					// see if we got a create table
 					if (final->isCreateTable ()) {
-
+						//int err = mkdir(args[2],S_IRWXU | S_IRWXG |S_IRWXO);
+						//if(err == -1){
+						//	cout<<"cannot make directory!"<<endl;
+						//}
 						string tableName = final->addToCatalog (args[2], myCatalog);
 						if (tableName != "nothing") {
 							allTables = MyDB_Table :: getAllTables (myCatalog);
@@ -160,6 +178,8 @@ int main (int numArgs, char **args) {
 								allTableReaderWriters[tableName] = allBPlusReaderWriters[tableName];
 							}
 							cout << "Added table " << final->addToCatalog (args[2], myCatalog) << "\n";
+                            string pre = args[2];
+                            toDelete.push_back(pre+"/"+tableName+".bin");
 						}	
 
 					} else if (final->isSFWQuery ()) {
@@ -167,7 +187,7 @@ int main (int numArgs, char **args) {
 						// print it out
 						final->printSFWQuery ();
 						auto msbegin = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-						MyRelOperation myrelop (final, allTableReaderWriters, myMgr, myCatalog);
+						MyRelOperation myrelop (final, allTableReaderWriters, myMgr, myCatalog, args[2]);
 						myrelop.run();
 						auto msend = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
 						cout<<"Time Cost: "<<msend - msbegin<<" ms"<<endl;

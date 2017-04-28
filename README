@@ -1,0 +1,48 @@
+COMP530 A07
+
+Members: Chengjiu ZHANG [cz36]
+         Fang LIU [fl16]
+
+Executable program is under directory cmake-build-debug.
+
+Please follow below order to run test cases:
+
+
+1. Start Sql Client:
+        Run ./sql_test cat outdir   
+        (The second parameter has to be “outdir” or existing directory)
+        
+Note: The folder for table has to be current directory.
+
+
+1. Create Table
+        Create the table you want to run query on.
+
+
+        E.g. 
+        CREATE TABLE lineitem (
+        l_orderkey        INT,
+        l_partkey        INT,
+        l_suppkey        INT,
+        l_linenumber        INT,
+        l_quantity        INT,
+        l_extendedprice        DOUBLE,
+        l_discount        DOUBLE,
+        l_tax                DOUBLE,
+        l_returnflag        STRING,
+        l_linestatus        STRING,
+        l_shipdate        STRING,
+        l_commitdate        STRING,
+        l_receiptdate        STRING,
+        l_shipinstruct        STRING,
+        l_shipmode        STRING,
+        l_comment        STRING
+);
+
+
+2. Load data into table
+        For example, run command: “load lineitem from lineitem.tbl;”
+
+3. Run the SQL in test case.
+        E.g. 
+        select l.l_comment from lineitem as l where (l.l_shipdate = "1994-05-12") and (l.l_commitdate = "1994-05-22") and (l.l_receiptdate = "1994-06-10");
